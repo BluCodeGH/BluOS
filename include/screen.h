@@ -19,6 +19,8 @@ int get_cursor();
 
 void set_cursor(int offset);
 
+void reset_cursor();
+
 void move_cursor(int drow, int dcol);
 
 void print_at (char* message, int col, int row);

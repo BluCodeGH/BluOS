@@ -23,7 +23,7 @@ debugmon: all
 
 iso: BluOS.iso
 
-BluOS.iso: kernel/kernel.elf
+BluOS.iso: kernel/kernel.elf iso/boot/grub/grub.cfg
 	cp kernel/kernel.elf iso/boot/BluOS.elf
 	grub-mkrescue -o BluOS.iso iso -- -quiet
 

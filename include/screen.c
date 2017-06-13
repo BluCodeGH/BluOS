@@ -90,6 +90,11 @@ void set_cursor(int offset) {
   bout(REG_SCREEN_DATA, (unsigned char)(offset & 0xFF));
 }
 
+void reset_cursor() {
+  wout(0x3D4, 0xE0A);
+  wout(0x3D4, 0xF0B);
+}
+
 void move_cursor(int drow, int dcol) {
   int offset;
   offset = get_cursor();

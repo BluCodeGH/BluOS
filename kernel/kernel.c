@@ -4,6 +4,7 @@
 #include "multiboot.h"
 #include "int/descriptor_tables.h"
 #include "paging.h"
+#include "kheap2.h"
 
 void main(multiboot *mbd) {
   u32int memory_size_kb = 0;
@@ -13,11 +14,17 @@ void main(multiboot *mbd) {
     memory_size_kb = 0x3FF + mbd->mem_upper;
   }
 
+  init_heap(0x1000000);
   init_descriptor_tables();
   initialise_paging(memory_size_kb);
+  reset_cursor();
   print("Welcome to BluOS. Current Memory Size: ");
   print_dec(memory_size_kb / 1024);
   print(" MiB.\n");
   setup_kb();
+  char *ma = nkmalloc(8);
+  char *mb = nkmalloc(16);
+  nkfree(ma);
+  char *mc = nkmalloc(2);
   for(;;);
 }
