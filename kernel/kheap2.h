@@ -11,6 +11,8 @@ typedef struct {
 
 void init_heap(int addr);
 
-char *nkmalloc(u32int sz);
+u32int nkmalloc(u32int sz, u32int *phys);
 
-void nkfree(char *start);
+u32int nkmalloc_a(u32int sz, u32int *phys);
+
+void nkfree(u32int start);
