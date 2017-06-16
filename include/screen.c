@@ -118,10 +118,11 @@ void print_at(char* message, int col, int row) {
   while (message[i] != 0) {
     _print_char(message[i++], -1, -1, WHITE_ON_BLACK);
   }
+  return i;
 }
 
 void print(char* message) {
-  print_at(message, -1, -1);
+  return print_at(message, -1, -1);
 }
 
 void clear_screen() {
@@ -205,5 +206,5 @@ void print_dec(u32int n) {
   while(i >= 0) {
     c2[i--] = c[j++];
   }
-  print(c2);
+  return print(c2);
 }

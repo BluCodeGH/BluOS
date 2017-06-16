@@ -22,9 +22,15 @@ void main(multiboot *mbd) {
   print_dec(memory_size_kb / 1024);
   print(" MiB.\n");
   setup_kb();
-  char *ma = nkmalloc(8);
-  char *mb = nkmalloc(16);
-  nkfree(ma);
-  char *mc = nkmalloc(2);
+  nkmalloc(8);
+  print_heap();
+  u32int a = nkmalloc_a(32);
+  print_heap();
+  nkmalloc(4);
+  print_heap();
+  nkfree(a);
+  print_heap();
+  nkmalloc_a(8);
+  print_heap();
   for(;;);
 }
