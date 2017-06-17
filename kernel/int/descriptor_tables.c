@@ -57,7 +57,7 @@ static void init_idt() {
   idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
   idt_ptr.base  = (u32int)&idt_entries;
 
-  memset((u8int)&idt_entries, 0, sizeof(idt_entry_t)*256);
+  memset((u8int *)&idt_entries, 0, sizeof(idt_entry_t)*256);
 
   //remap the irq table
   bout(0x20, 0x11);

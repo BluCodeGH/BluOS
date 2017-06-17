@@ -2,7 +2,7 @@
 #include "stddef.h"
 #include "mem.h"
 #include "panic.h"
-#include "kheap2.h"
+#include "kheap.h"
 #include "int/handlers.h"
 
 // The kernel's page directory
@@ -115,11 +115,11 @@ void initialise_paging(u32int size) {
   u32int mem_end_page = size * 1024;
 
   nframes = mem_end_page / 0x1000; //setup our frames bitmap
-  frames = (u32int*)nkmalloc(INDEX_FROM_BIT(nframes));
+  frames = (u32int*)kmalloc(INDEX_FROM_BIT(nframes));
   memset((u8int *)frames, 0, INDEX_FROM_BIT(nframes));
 
   // Let's make a page directory.
-  kernel_directory = (page_directory_t*)nkmalloc_a(sizeof(page_directory_t));
+  kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t));
   memset((u8int *)kernel_directory, 0, sizeof(page_directory_t));
   current_directory = kernel_directory;
 
@@ -162,7 +162,7 @@ page_t *get_page(u32int address, int make, page_directory_t *dir) {
     return &dir->tables[table_idx]->pages[address%1024];
   } else if(make) {
     u32int tmp;
-    dir->tables[table_idx] = (page_table_t*)nkmalloc_ap(sizeof(page_table_t), &tmp);
+    dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
     memset((u8int *)dir->tables[table_idx], 0, 0x1000);
     dir->tablesPhysical[table_idx] = tmp | 0x7; // PRESENT, RW, US.
     return &dir->tables[table_idx]->pages[address%1024];
