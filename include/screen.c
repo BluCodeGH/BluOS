@@ -108,20 +108,20 @@ void print_char(char c) {
   _print_char(c, -1, -1, WHITE_ON_BLACK);
 }
 
-void print_at(char* message, int col, int row) {
+u32int print_at(char* message, int col, int row) {
   // Update the cursor if col and row not negative .
   if (col >= 0 && row >= 0) {
     set_cursor(get_screen_offset(col, row));
   }
   // Loop through each char of the message and print it.
-  int i = 0;
+  u32int i = 0;
   while (message[i] != 0) {
     _print_char(message[i++], -1, -1, WHITE_ON_BLACK);
   }
   return i;
 }
 
-void print(char* message) {
+u32int print(char* message) {
   return print_at(message, -1, -1);
 }
 
@@ -183,10 +183,9 @@ void print_hex(u32int n) {
   } else {
     _print_char( tmp+'0', -1, -1, WHITE_ON_BLACK);
   }
-
 }
 
-void print_dec(u32int n) {
+u32int print_dec(u32int n) {
   if (n == 0) {
     _print_char('0', -1, -1, WHITE_ON_BLACK);
     return;

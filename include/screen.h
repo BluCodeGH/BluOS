@@ -1,4 +1,5 @@
 #pragma once
+#include "stddef.h"
 
 #define VIDEO_ADDRESS ((char *)0xb8000)
 #define MAX_ROWS 25
@@ -23,12 +24,16 @@ void reset_cursor();
 
 void move_cursor(int drow, int dcol);
 
-void print_at (char* message, int col, int row);
+u32int print_at (char* message, int col, int row);
 
-void print(char* message);
+u32int print(char* message);
 
 void print_char(char c);
 
 void clear_screen();
 
 int handle_scrolling(int cursor_offset);
+
+void print_hex(u32int n);
+
+u32int print_dec(u32int n);

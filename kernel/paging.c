@@ -2,7 +2,7 @@
 #include "stddef.h"
 #include "mem.h"
 #include "panic.h"
-#include "kheap.h"
+#include "kheap2.h"
 #include "int/handlers.h"
 
 // The kernel's page directory
@@ -13,9 +13,6 @@ page_directory_t *current_directory=0;
 
 u32int *frames;
 u32int nframes;
-
-// Defined in kheap.c
-extern u32int placement_address;
 
 // Macros used in the bitset algorithms.
 #define INDEX_FROM_BIT(a) (a/(8*4))
@@ -115,16 +112,14 @@ void page_fault(registers_t regs) {
 }
 
 void initialise_paging(u32int size) {
-  // The size of physical memory. For the moment we
-  // assume it is 16MB big.
   u32int mem_end_page = size * 1024;
 
   nframes = mem_end_page / 0x1000; //setup our frames bitmap
-  frames = (u32int*)kmalloc(INDEX_FROM_BIT(nframes));
+  frames = (u32int*)nkmalloc(INDEX_FROM_BIT(nframes));
   memset((u8int *)frames, 0, INDEX_FROM_BIT(nframes));
 
   // Let's make a page directory.
-  kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t));
+  kernel_directory = (page_directory_t*)nkmalloc_a(sizeof(page_directory_t));
   memset((u8int *)kernel_directory, 0, sizeof(page_directory_t));
   current_directory = kernel_directory;
 
@@ -138,9 +133,10 @@ void initialise_paging(u32int size) {
   int i = 0;
   while (i < mem_end_page) {
     // Kernel code is readable but not writeable from userspace.
-    alloc_frame( get_page(i, 1, kernel_directory), 0, 1);
+    alloc_frame(get_page(i, 1, kernel_directory), 0, 1);
     i += 0x1000;
   }
+
   // Before we enable paging, we must register our page fault handler.
   register_interrupt_handler(14, page_fault);
 
@@ -166,7 +162,7 @@ page_t *get_page(u32int address, int make, page_directory_t *dir) {
     return &dir->tables[table_idx]->pages[address%1024];
   } else if(make) {
     u32int tmp;
-    dir->tables[table_idx] = (page_table_t*)kmalloc_ap(sizeof(page_table_t), &tmp);
+    dir->tables[table_idx] = (page_table_t*)nkmalloc_ap(sizeof(page_table_t), &tmp);
     memset((u8int *)dir->tables[table_idx], 0, 0x1000);
     dir->tablesPhysical[table_idx] = tmp | 0x7; // PRESENT, RW, US.
     return &dir->tables[table_idx]->pages[address%1024];

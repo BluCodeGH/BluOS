@@ -13,10 +13,9 @@ void main(multiboot *mbd) {
   } else {
     memory_size_kb = 0x3FF + mbd->mem_upper;
   }
-
-  init_heap(0x1000000);
   init_descriptor_tables();
   initialise_paging(memory_size_kb);
+  init_heap(); //Must be called after paging enable
   reset_cursor();
   print("Welcome to BluOS. Current Memory Size: ");
   print_dec(memory_size_kb / 1024);

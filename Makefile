@@ -7,7 +7,7 @@ HEADERS = $(wildcard kernel/*.h kernel/int/*.h include/*.h)
 OBJC = ${C_SOURCES:.c=.o}
 OBJA = ${ASM_SOURCES:.asm=.o}
 
-QEMU = /mnt/a/Programs/QEMU/qemu-system-i386.exe -cdrom BluOS.iso -m 128M
+QEMU = /mnt/a/Programs/QEMU/qemu-system-i386.exe -cdrom BluOS.iso
 
 # Default build target
 all: iso
@@ -27,8 +27,8 @@ BluOS.iso: kernel/kernel.elf iso/boot/grub/grub.cfg
 	cp kernel/kernel.elf iso/boot/BluOS.elf
 	grub-mkrescue -o BluOS.iso iso -- -quiet
 
-kernel/kernel.elf: boot/grubboot.o ${OBJC} ${OBJA}
-	ld -T link.ld -m elf_i386 -o kernel/kernel.elf $^
+kernel/kernel.elf: link.ld boot/grubboot.o ${OBJC} ${OBJA}
+	ld -T link.ld -m elf_i386 -o kernel/kernel.elf boot/grubboot.o ${OBJC} ${OBJA}
 	objcopy --only-keep-debug kernel/kernel.elf kernel/kernel.sym
 	objcopy --strip-debug kernel/kernel.elf kernel/kernel.elf
 
